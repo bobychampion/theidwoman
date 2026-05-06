@@ -117,7 +117,10 @@ export default function Dashboard({ user }: { user: User }) {
             <div className="mb-10 flex justify-between items-start">
               <div>
                 <p className="text-[11px] font-bold text-brand uppercase tracking-[0.4em] mb-3">PROGRESS TREND</p>
-                <h3 className="text-3xl font-serif text-text-main italic">Growth Velocity</h3>
+                <div className="flex items-center gap-6">
+                  <h3 className="text-3xl font-serif text-text-main italic">Growth Velocity</h3>
+                  <Link to="/vitality" className="px-6 py-2.5 bg-brand text-white text-[9px] font-bold uppercase tracking-widest rounded-full shadow-lg shadow-brand/20 hover:scale-105 transition-all">Check-in</Link>
+                </div>
               </div>
               <div className="flex items-center gap-2 bg-brand-light/10 px-4 py-2 rounded-full">
                 <TrendingUp className="w-4 h-4 text-brand" />
@@ -243,7 +246,7 @@ export default function Dashboard({ user }: { user: User }) {
       <div className="space-y-10">
         <div className="flex items-center justify-between">
           <h3 className="text-3xl font-serif text-text-main italic">Strategic Recommendations</h3>
-          <button className="text-[11px] font-bold text-brand uppercase tracking-[0.3em] border-b border-brand/20 pb-1">Analyze My Data</button>
+          <Link to="/audit" className="text-[11px] font-bold text-brand uppercase tracking-[0.3em] border-b border-brand/20 pb-1">Analyze My Data</Link>
         </div>
         <div className="grid md:grid-cols-3 gap-10">
            {[

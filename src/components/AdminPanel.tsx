@@ -433,7 +433,7 @@ export default function AdminPanel({ user }: { user: any }) {
                     />
                   </div>
                   <div className="space-y-3">
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted ml-5">Runtime Duration</label>
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted ml-5">Module Duration</label>
                     <input 
                       type="text" 
                       value={formData.duration}
@@ -445,7 +445,7 @@ export default function AdminPanel({ user }: { user: any }) {
                 </div>
 
                 <div className="space-y-3">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted ml-5">Transformation Promise</label>
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted ml-5">Module Description</label>
                   <textarea 
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}

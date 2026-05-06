@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Link, useNavigate, useLocation } from "re
 import { onAuthStateChanged, User, signOut, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth, db } from "./lib/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { LayoutDashboard, BookOpen, Calendar, ShoppingBag, User as UserIcon, LogOut, ShieldCheck, Menu, X } from "lucide-react";
+import { LayoutDashboard, BookOpen, Calendar, ShoppingBag, User as UserIcon, LogOut, ShieldCheck, Menu, X, Users } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "./lib/utils";
 
@@ -16,6 +16,9 @@ import Store from "./components/Store";
 import Profile from "./components/Profile";
 import AdminPanel from "./components/AdminPanel";
 import Chatbot from "./components/Chatbot";
+import AIIdentityAudit from "./components/AIIdentityAudit";
+import SisterhoodCircle from "./components/SisterhoodCircle";
+import VitalityCheckin from "./components/VitalityCheckin";
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -87,6 +90,7 @@ function AuthenticatedApp({ user, isAdmin }: { user: User; isAdmin: boolean }) {
   const navItems = [
     { name: "Dashboard", path: "/", icon: LayoutDashboard },
     { name: "Learning Paths", path: "/program", icon: BookOpen },
+    { name: "Sisterhood", path: "/sisterhood", icon: Users },
     { name: "Coaching", path: "/booking", icon: Calendar },
     { name: "Blueprint Store", path: "/store", icon: ShoppingBag },
     { name: "Profile", path: "/profile", icon: UserIcon },
@@ -231,6 +235,9 @@ function AuthenticatedApp({ user, isAdmin }: { user: User; isAdmin: boolean }) {
               <Route path="/booking" element={<BookingSystem user={user} />} />
               <Route path="/store" element={<Store user={user} />} />
               <Route path="/profile" element={<Profile user={user} />} />
+              <Route path="/audit" element={<AIIdentityAudit user={user} />} />
+              <Route path="/sisterhood" element={<SisterhoodCircle user={user} />} />
+              <Route path="/vitality" element={<VitalityCheckin user={user} />} />
               {isAdmin && <Route path="/admin" element={<AdminPanel user={user} />} />}
             </Routes>
           </div>
