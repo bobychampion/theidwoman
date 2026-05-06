@@ -1,0 +1,97 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Phase 3: Primitives
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isEmailVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      // Bootstrapped admin
+      return isSignedIn() && (
+        request.auth.token.email == 'jabpa87@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // 1. User Profiles
+    match /users/{userId} {
+      function isValidUser(data) {
+        return data.uid == request.auth.uid &&
+               data.email is string && data.email.size() <= 200 &&
+               data.role in ['user', 'admin'] &&
+               (!('displayName' in data) || (data.displayName is string && data.displayName.size() <= 100));
+      }
+
+      allow get: if isSignedIn();
+      allow list: if isAdmin();
+      allow create: if isOwner(userId) && isValidUser(request.resource.data);
+      allow update: if isOwner(userId) && isValidUser(request.resource.data) &&
+                      request.resource.data.diff(resource.data).affectedKeys().hasOnly(['displayName', 'photoURL', 'progress', 'updatedAt']);
+      allow delete: if isAdmin();
+    }
+
+    // 2. Modules (Course Content)
+    match /modules/{moduleId} {
+      function isValidModule(data) {
+        return data.title is string && data.title.size() <= 200 &&
+               data.category in ["Identity", "Alignment", "Family", "Finances", "Fitness", "Integration"];
+      }
+
+      allow read: if isSignedIn();
+      allow write: if isAdmin() && isValidModule(request.resource.data);
+    }
+
+    // 3. Purchases
+    match /purchases/{purchaseId} {
+      function isValidPurchase(data) {
+        return data.userId == request.auth.uid &&
+               data.amount is number && data.amount > 0 &&
+               data.status in ['pending', 'completed', 'failed'];
+      }
+
+      allow get: if isOwner(resource.data.userId) || isAdmin();
+      allow list: if isOwner(resource.data.userId) || isAdmin();
+      allow create: if isEmailVerified() && isValidPurchase(request.resource.data);
+      allow update: if isAdmin(); // Only admin can finalize/update status
+    }
+
+    // 4. Bookings
+    match /bookings/{bookingId} {
+      function isValidBooking(data) {
+        return data.userId == request.auth.uid &&
+               data.status in ['scheduled', 'completed', 'cancelled'] &&
+               data.startTime is timestamp && data.endTime is timestamp;
+      }
+
+      allow get: if isOwner(resource.data.userId) || isAdmin();
+      allow list: if isOwner(resource.data.userId) || isAdmin();
+      allow create: if isEmailVerified() && isValidBooking(request.resource.data);
+      allow update: if (isOwner(resource.data.userId) || isAdmin()) && 
+                      request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'startTime', 'endTime', 'zoomLink']);
+    }
+
+    // Admin records
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if false; // Only manageable via console or specialized tool
+    }
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "User account details and settings.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "admin"] },
+        "progress": { 
+          "type": "object",
+          "description": "Map of moduleId to completion status and timestamp.",
+          "properties": {
+            "completedModules": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Module": {
+      "title": "Course Module",
+      "description": "Educational content for the 4Fs.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "category": { "type": "string", "enum": ["Identity", "Alignment", "Family", "Finances", "Fitness", "Integration"] },
+        "videoUrl": { "type": "string" },
+        "resources": { "type": "array" },
+        "order": { "type": "number" }
+      },
+      "required": ["title", "category", "order"]
+    },
+    "Purchase": {
+      "title": "Order / Purchase",
+      "description": "History of user transactions.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "productId": { "type": "string" },
+        "amount": { "type": "number" },
+        "currency": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "completed", "failed"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Booking": {
+      "title": "Coaching Booking",
+      "description": "Scheduled coaching sessions.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "adminId": { "type": "string" },
+        "startTime": { "type": "string", "format": "date-time" },
+        "endTime": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["scheduled", "completed", "cancelled"] },
+        "zoomLink": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "User",
+      "description": "Primary user profiles."
+    },
+    "modules/{moduleId}": {
+      "schema": "Module",
+      "description": "Course content."
+    },
+    "purchases/{purchaseId}": {
+      "schema": "Purchase",
+      "description": "User orders."
+    },
+    "bookings/{bookingId}": {
+      "schema": "Booking",
+      "description": "Coaching sessions."
+    }
+  }
+}

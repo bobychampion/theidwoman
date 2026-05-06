@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Alex+Brush&family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-script: "Alex Brush", cursive;
+  --font-serif: "Playfair Display", serif;
+  
+  --color-brand: #c07d64; /* Terracotta */
+  --color-brand-light: #dfcec1;
+  --color-brand-dark: #8c5a47;
+  --color-surface: #fdf8f4; /* Soft Cream */
+  --color-text-main: #2d2d2d;
+  --color-text-muted: #717171;
+}
+
+@layer base {
+  body {
+    @apply bg-surface text-text-main font-sans antialiased;
+  }
+}
+
